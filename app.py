@@ -10,6 +10,18 @@ from narrative import generate_narrative
 
 st.set_page_config(page_title="Autonomous AI Data Analyst", layout="wide")
 
+DB_PATH = os.path.join("db", "olist.db")
+
+if not os.path.exists(DB_PATH):
+    with st.spinner("First-time setup: building the database from source data..."):
+        from load_data import load_csv_to_sqlite, add_indexes
+        import sqlite3
+        os.makedirs("db", exist_ok=True)
+        conn = sqlite3.connect(DB_PATH)
+        load_csv_to_sqlite(conn)
+        add_indexes(conn)
+        conn.close()
+
 st.title("🤖 Autonomous AI Data Analyst")
 st.caption("Ask questions about Olist e-commerce data, or explore proactively detected insights")
 
