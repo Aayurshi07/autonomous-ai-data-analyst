@@ -1,4 +1,4 @@
-data/
 db/
 __pycache__/
 .env
+data/olist_geolocation_dataset.csv
