@@ -6,7 +6,7 @@ A GenAI-powered analytics tool that answers natural-language questions about e-c
 
 
 
-\*\*Live app:\*\* \[autonomous-ai-data-analyst-2msbxvxyw2x2cwufnlz45w.streamlit.app](https://autonomous-ai-data-analyst-2msbxvxyw2x2cwufnlz45w.streamlit.app)
+\Live app: \[autonomous-ai-data-analyst-2msbxvxyw2x2cwufnlz45w.streamlit.app](https://autonomous-ai-data-analyst-2msbxvxyw2x2cwufnlz45w.streamlit.app)
 
 
 
@@ -22,9 +22,9 @@ The application has two core capabilities:
 
 
 
-1\. \*\*Text-to-SQL agent\*\* — accepts a natural-language question, generates a SQL query against a relational schema using Gemini, validates the query for safety, executes it, and returns results. If execution fails, the failing query and error message are fed back to the model for correction, up to three attempts.
+1\. Text-to-SQL agent — accepts a natural-language question, generates a SQL query against a relational schema using Gemini, validates the query for safety, executes it, and returns results. If execution fails, the failing query and error message are fed back to the model for correction, up to three attempts.
 
-2\. \*\*Proactive anomaly detection and narrative generation\*\* — computes daily revenue, flags statistically significant deviations using Z-scores, and generates a plain-language summary explaining the detected anomalies, without requiring a user query.
+2\. Proactive anomaly detection and narrative generation — computes daily revenue, flags statistically significant deviations using Z-scores, and generates a plain-language summary explaining the detected anomalies, without requiring a user query.
 
 
 
@@ -108,13 +108,13 @@ The anomaly detector correctly identified \*\*November 24, 2017 (Black Friday)\*
 
 
 
-\- \*\*Semantic correctness is not guaranteed.\*\* When asked for "profit margin per seller" — a metric the schema does not support, since no cost data exists — the agent generated a syntactically valid query (`(price − freight\_value) / price`) that treats shipping cost as cost of goods. The query executed without error but the result is not a meaningful profit margin. This reflects a general limitation of text-to-SQL systems: syntactic validity does not imply semantic validity. A plausibility or confidence check prior to displaying results would be a natural extension.
+\- Semantic correctness is not guaranteed.\*\* When asked for "profit margin per seller" — a metric the schema does not support, since no cost data exists — the agent generated a syntactically valid query (`(price − freight\_value) / price`) that treats shipping cost as cost of goods. The query executed without error but the result is not a meaningful profit margin. This reflects a general limitation of text-to-SQL systems: syntactic validity does not imply semantic validity. A plausibility or confidence check prior to displaying results would be a natural extension.
 
-\- \*\*Anomaly detection in this dataset only flagged revenue spikes, not drops.\*\* The detection logic checks both directions (`abs(z-score) > threshold`); the absence of flagged drops reflects the underlying data over the analyzed period, not an asymmetry in the detection method.
+\- Anomaly detection in this dataset only flagged revenue spikes, not drops.\*\* The detection logic checks both directions (`abs(z-score) > threshold`); the absence of flagged drops reflects the underlying data over the analyzed period, not an asymmetry in the detection method.
 
-\- \*\*Free-tier hosting sleeps after inactivity\*\*, mitigated but not eliminated by the scheduled keep-alive workflow.
+\- Free-tier hosting sleeps after inactivity\*\*, mitigated but not eliminated by the scheduled keep-alive workflow.
 
-\- \*\*The database is not committed to the repository.\*\* It is rebuilt from source CSVs on first run to avoid storing a large binary file in version control; this adds a short delay on a cold start.
+\- The database is not committed to the repository.\*\* It is rebuilt from source CSVs on first run to avoid storing a large binary file in version control; this adds a short delay on a cold start.
 
 
 
