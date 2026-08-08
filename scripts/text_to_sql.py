@@ -32,8 +32,23 @@ category_translation(product_category_name, product_category_name_english)
 """
 
 
-def generate_sql(question):
-    prompt = f"""You are a SQL expert. Given this database schema:
+def generate_sql(question, previous_sql=None, error_message=None):
+    if previous_sql and error_message:
+        prompt = f"""You are a SQL expert. Given this database schema:
+
+{SCHEMA}
+
+You previously wrote this SQL query to answer: "{question}"
+
+{previous_sql}
+
+But it failed with this error:
+{error_message}
+
+Fix the query. Return ONLY the corrected SQL, no explanation, no markdown formatting, no backticks.
+"""
+    else:
+        prompt = f"""You are a SQL expert. Given this database schema:
 
 {SCHEMA}
 
@@ -52,7 +67,6 @@ Rules:
 
     sql = response.text.strip()
     return sql
-
 def is_safe_sql(sql):
     forbidden = ["DROP", "DELETE", "UPDATE", "INSERT", "ALTER", "TRUNCATE", "CREATE"]
     sql_upper = sql.upper()
@@ -84,18 +98,33 @@ if __name__ == "__main__":
             break
 
         sql = generate_sql(question)
-        print(f"\nGenerated SQL:\n{sql}\n")
+        max_attempts = 3
+        attempt = 1
+        success = False
 
-        if not is_safe_sql(sql):
-            print("This query was blocked for safety reasons.\n")
-            continue
+        while attempt <= max_attempts:
+            print(f"\nAttempt {attempt} — Generated SQL:\n{sql}\n")
 
-        columns, result = run_query(sql)
+            if not is_safe_sql(sql):
+                print("This query was blocked for safety reasons.\n")
+                break
 
-        if columns is None:
-            print(f"Query failed: {result}\n")
-        else:
+            columns, result = run_query(sql)
+
+            if columns is not None:
+                success = True
+                break
+            else:
+                print(f"Query failed: {result}")
+                if attempt < max_attempts:
+                    print("Asking the AI to fix it...\n")
+                    sql = generate_sql(question, previous_sql=sql, error_message=result)
+                attempt += 1
+
+        if success:
             print(columns)
             for row in result[:10]:
                 print(row)
             print()
+        else:
+            print(f"Gave up after {max_attempts} attempts.\n")
